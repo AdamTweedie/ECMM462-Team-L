@@ -30,10 +30,44 @@ public class world{
     }
 
     //
-    public static boolean validMove(world world){
-        boolean rst = true;
+     public static boolean validMove(world world){
+        boolean valid = true;
+        craneMove currentMove = world.currentMove;
 
-        return rst;
+        if (currentMove.sourceId == 0) {
+            if (currentMove.blockId != world.aristk.stack.get(0).id) {
+                return false; // block not found
+            }
+        }
+        if (currentMove.sourceId == 1) {
+            int[] ids = new int[world.bufstk.bufferamount];
+            for (ArrayList<block> stack : world.bufstk.stack) {
+                ids[world.bufstk.stack.indexOf(stack)] = stack.get(stack.size()-1).id;
+            }
+            if (IntStream.of(ids).noneMatch(x -> x == currentMove.blockId)) { // if block not top in any buffer
+                return false; // block not found
+            }
+        }
+        if (currentMove.sourceId == 2) {
+            return false; // invalid source
+        }
+        if (currentMove.targetId == 0) {
+            return false; // invalid target
+        }
+        if (currentMove.targetId == 1) {
+            int stacksTotalCapacity = 0;
+            for ( ArrayList<block> stack : world.bufstk.stack) {
+                stacksTotalCapacity += stack.size();
+            }
+            if (stacksTotalCapacity >= world.bufstk.totalCapacity) {
+                return false; // height violation
+            }
+        }
+
+        // Not Ready
+
+
+        return valid;
     }
 
 }
