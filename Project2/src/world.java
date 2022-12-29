@@ -33,12 +33,13 @@ public class world{
     }
 
     public static boolean validMove(world world){
-        boolean valid = true;
         craneMove currentMove = world.currentMove;
-
         if (currentMove.sourceId == 0) {
             if (currentMove.blockId != world.aristk.stack.get(0).id) {
                 return false; // block not found
+            }
+            if (currentMove.targetId == 2 && currentMove.blockId == world.aristk.stack.get(0).id && !world.aristk.stack.get(0).ready) {
+                return false; // block is not ready
             }
         }
         if (currentMove.sourceId == 1) {
@@ -51,9 +52,10 @@ public class world{
             if (IntStream.of(ids).noneMatch(x -> x == currentMove.blockId)) { // if block not top in any buffer
                 return false; // block not found
             }
+
             for (block ontopblock : blocksOnTop) {
-                if (ontopblock.id == currentMove.blockId && !ontopblock.ready) {
-                    return false; // block is not ready 
+                if (currentMove.targetId == 2 && ontopblock.id == currentMove.blockId && !ontopblock.ready) {
+                    return false; // block is not ready
                 }
             }
         }
@@ -73,9 +75,6 @@ public class world{
             }
         }
 
-        // Not Ready
-
-
-        return valid;
+        return true; // otherwise return true
     }
 }
